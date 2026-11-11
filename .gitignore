@@ -1,0 +1,142 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/node_modules
+/.pnp
+.pnp.js
+.yarn/install-state.gz
+
+# testing
+/coverage
+
+# next.js
+/.next/
+/out/
+.next
+next-env.d.ts
+
+# production
+/build
+/dist
+
+# misc
+.DS_Store
+*.pem
+.vscode
+.idea
+
+# debug
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# local env files
+# .env
+# .env.local
+# .env.*
+
+# vercel
+.vercel
+
+# typescript
+*.tsbuildinfo
+
+# logs
+*.log
+logs/
+
+# cache
+.cache/
+.npm/
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Optional stylelint cache
+.stylelintcache
+
+# Temporary files
+*.swp
+*.swo
+*~
+
+# MongoDB
+*.mongodb
+mongodb/
+
+terraform/.terraform/*
+terraform/terra-key.pub
+terraform/terra-key
+terraform/terraform.tfstate*
+terraform/.terraform.lock.hcl
+terraform/.terraform/modules/*
+
+.terraform.tfstate.lock.info
+terraform/.terraform
+.terraform.lock.hcl
+.terraform
+terraform.tfstate
+terraform.tfstate.backup
+terraform/terraform.tfstate
+terraform/terraform.tfstate.backup
+terra-key.pub
+terra-key
+# ==================================================
+# EASYSHOP LOCAL SECURITY RULES
+# ==================================================
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# Local Kubernetes secrets and backups
+kubernetes/05-secrets.yaml
+kubernetes/local/backups/
+kubernetes/local/*secret*.yaml
+kubernetes/local/*secret*.yml
+kubernetes/local/*secret*.json
+
+# Local source backups
+*.backup
+*.bak
+
+# Private keys and certificates
+*.key
+*.pem
+*.p12
+*.pfx
+
+# Local credentials
+credentials.json
+secrets.json
+
+# ==================================================
+# LOCAL EASYSHOP DEVOPS PROJECT
+# Exclude original cloud infrastructure
+# ==================================================
+terraform/
+kubernetes/00-cluster-issuer.yml
+kubernetes/01-namespace.yaml
+kubernetes/02-mongodb-pv.yaml
+kubernetes/03-mongodb-pvc.yaml
+kubernetes/04-configmap.yaml
+kubernetes/06-mongodb-service.yaml
+kubernetes/07-mongodb-statefulset.yaml
+kubernetes/08-easyshop-deployment.yaml
+kubernetes/09-easyshop-service.yaml
+kubernetes/10-ingress.yaml
+kubernetes/11-hpa.yaml
+kubernetes/12-migration-job.yaml
