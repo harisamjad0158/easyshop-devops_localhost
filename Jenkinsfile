@@ -131,6 +131,86 @@ pipeline {
                 }
             }
         }
+        stage('Deploy to Kubernetes') {
+            steps {
+                sh '''
+                    set -eu
+                    set +x
+
+                    echo "Refreshing restricted Kubernetes credentials..."
+
+                    sudo -n /usr/local/libexec/easyshop/create-kubeconfig
+
+                    export KUBECONFIG=/var/lib/easyshop/jenkins-kube/config
+
+                    NAMESPACE="easyshop-cicd"
+                    DEPLOYMENT="easyshop-cicd"
+                    CONTAINER="easyshop"
+                    IMAGE="${DOCKERHUB_IMAGE}:${IMAGE_TAG}"
+
+                    echo "Verifying Kubernetes identity..."
+
+                    kubectl auth whoami | grep -F \
+                        "system:serviceaccount:easyshop-cicd:jenkins-deployer" \
+                        >/dev/null
+
+                    echo "Deploying image: $IMAGE"
+
+                    kubectl set image \
+                        "deployment/$DEPLOYMENT" \
+                        "$CONTAINER=$IMAGE" \
+                        -n "$NAMESPACE"
+
+                    echo "Waiting for Kubernetes rollout..."
+
+                    ATTEMPT=0
+                    MAX_ATTEMPTS=60
+
+                    while [ "$ATTEMPT" -lt "$MAX_ATTEMPTS" ]; do
+                        ATTEMPT=$((ATTEMPT + 1))
+
+                        STATUS=$(kubectl get deployment "$DEPLOYMENT" \
+                            -n "$NAMESPACE" \
+                            -o jsonpath='{.metadata.generation}{"|"}{.status.observedGeneration}{"|"}{.spec.replicas}{"|"}{.status.updatedReplicas}{"|"}{.status.readyReplicas}{"|"}{.status.availableReplicas}')
+
+                        IFS='|' read -r \
+                            GENERATION OBSERVED DESIRED UPDATED READY AVAILABLE \
+                            <<EOF_STATUS
+$STATUS
+EOF_STATUS
+
+                        GENERATION="${GENERATION:-0}"
+                        OBSERVED="${OBSERVED:-0}"
+                        DESIRED="${DESIRED:-0}"
+                        UPDATED="${UPDATED:-0}"
+                        READY="${READY:-0}"
+                        AVAILABLE="${AVAILABLE:-0}"
+
+                        CURRENT_IMAGE=$(kubectl get deployment "$DEPLOYMENT" \
+                            -n "$NAMESPACE" \
+                            -o jsonpath='{.spec.template.spec.containers[?(@.name=="easyshop")].image}')
+
+                        if [ "$GENERATION" = "$OBSERVED" ] &&
+                           [ "$UPDATED" = "$DESIRED" ] &&
+                           [ "$READY" = "$DESIRED" ] &&
+                           [ "$AVAILABLE" = "$DESIRED" ] &&
+                           [ "$CURRENT_IMAGE" = "$IMAGE" ]; then
+
+                            echo "PASS: Kubernetes deployment successful."
+                            echo "Image: $CURRENT_IMAGE"
+                            exit 0
+                        fi
+
+                        echo "Rollout pending ($ATTEMPT/$MAX_ATTEMPTS)"
+                        sleep 5
+                    done
+
+                    echo "FAIL: Kubernetes rollout timed out."
+                    exit 1
+                '''
+            }
+        }
+
     }
 
     post {
