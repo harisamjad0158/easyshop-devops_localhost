@@ -27,7 +27,7 @@ spec:
     spec:
       containers:
         - name: easyshop
-          image: johncorner158/easyshop-ci:build-11
+          image: johncorner158/easyshop-ci:build-12
           imagePullPolicy: IfNotPresent
 
           ports:
