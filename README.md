@@ -103,7 +103,6 @@ The following are **actual lab values**, not generic defaults. Change them for a
 | Argo CD Application | `argocd/easyshop-cicd` |
 | Argo CD source | `gitops` branch, `kubernetes/gitops` directory |
 | GitOps manifest | `kubernetes/gitops/deployment.yaml` |
-<img width="1752" height="897" alt="EasyShop DevOps   GitOps Architecture" src="https://github.com/user-attachments/assets/268253ec-76be-4da5-a808-f894f0405216" />
 
 **Lab URLs:**
 
