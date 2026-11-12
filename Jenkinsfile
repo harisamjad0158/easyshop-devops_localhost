@@ -135,82 +135,49 @@ pipeline {
                 }
             }
         }
-        stage('Deploy to Kubernetes') {
+        stage('Update GitOps Manifest') {
             steps {
                 sh '''
                     set -eu
-                    set +x
 
-                    echo "Refreshing restricted Kubernetes credentials..."
-
-                    sudo -n /usr/local/libexec/easyshop/create-kubeconfig
-
-                    export KUBECONFIG=/var/lib/easyshop/jenkins-kube/config
-
-                    NAMESPACE="easyshop-cicd"
-                    DEPLOYMENT="easyshop-cicd"
-                    CONTAINER="easyshop"
+                    REPO="git@github.com:harisamjad0158/easyshop-devops_localhost.git"
                     IMAGE="${DOCKERHUB_IMAGE}:${IMAGE_TAG}"
 
-                    echo "Verifying Kubernetes identity..."
+                    GITOPS_DIR="$(mktemp -d)"
+                    trap 'rm -rf "$GITOPS_DIR"' EXIT
 
-                    kubectl auth whoami | grep -F \
-                        "system:serviceaccount:easyshop-cicd:jenkins-deployer" \
-                        >/dev/null
+                    echo "Cloning GitOps branch..."
 
-                    echo "Deploying image: $IMAGE"
+                    git clone --quiet --branch gitops --single-branch "$REPO" "$GITOPS_DIR"
 
-                    kubectl set image \
-                        "deployment/$DEPLOYMENT" \
-                        "$CONTAINER=$IMAGE" \
-                        -n "$NAMESPACE"
+                    cd "$GITOPS_DIR"
 
-                    echo "Waiting for Kubernetes rollout..."
+                    git config user.name "EasyShop Jenkins CI"
+                    git config user.email "jenkins@localhost"
 
-                    ATTEMPT=0
-                    MAX_ATTEMPTS=60
+                    MANIFEST="kubernetes/gitops/deployment.yaml"
 
-                    while [ "$ATTEMPT" -lt "$MAX_ATTEMPTS" ]; do
-                        ATTEMPT=$((ATTEMPT + 1))
+                    echo "Updating image to: $IMAGE"
 
-                        STATUS=$(kubectl get deployment "$DEPLOYMENT" \
-                            -n "$NAMESPACE" \
-                            -o jsonpath='{.metadata.generation}{"|"}{.status.observedGeneration}{"|"}{.spec.replicas}{"|"}{.status.updatedReplicas}{"|"}{.status.readyReplicas}{"|"}{.status.availableReplicas}')
+                    sed -i -E                       "s|^([[:space:]]*image:[[:space:]]*)johncorner158/easyshop-ci:build-[0-9]+[[:space:]]*$|\\1${IMAGE}|"                       "$MANIFEST"
 
-                        IFS='|' read -r \
-                            GENERATION OBSERVED DESIRED UPDATED READY AVAILABLE \
-                            <<EOF_STATUS
-$STATUS
-EOF_STATUS
+                    IMAGE_COUNT=$(grep -Fxc                       "          image: $IMAGE" "$MANIFEST")
 
-                        GENERATION="${GENERATION:-0}"
-                        OBSERVED="${OBSERVED:-0}"
-                        DESIRED="${DESIRED:-0}"
-                        UPDATED="${UPDATED:-0}"
-                        READY="${READY:-0}"
-                        AVAILABLE="${AVAILABLE:-0}"
+                    if [ "$IMAGE_COUNT" -ne 1 ]; then
+                        echo "FAIL: GitOps image update was not unique."
+                        false
+                    fi
 
-                        CURRENT_IMAGE=$(kubectl get deployment "$DEPLOYMENT" \
-                            -n "$NAMESPACE" \
-                            -o jsonpath='{.spec.template.spec.containers[?(@.name=="easyshop")].image}')
+                    git add "$MANIFEST"
 
-                        if [ "$GENERATION" = "$OBSERVED" ] &&
-                           [ "$UPDATED" = "$DESIRED" ] &&
-                           [ "$READY" = "$DESIRED" ] &&
-                           [ "$AVAILABLE" = "$DESIRED" ] &&
-                           [ "$CURRENT_IMAGE" = "$IMAGE" ]; then
+                    if git diff --cached --quiet; then
+                        echo "GitOps manifest already up to date."
+                    else
+                        git commit -m "ci: deploy ${IMAGE_TAG} via GitOps"
+                        git push origin HEAD:refs/heads/gitops
+                    fi
 
-                            echo "PASS: Kubernetes deployment successful."
-                            echo "Image: $CURRENT_IMAGE"
-                            exit 0
-                        fi
-
-                        echo "Rollout pending ($ATTEMPT/$MAX_ATTEMPTS)"
-                        sleep 5
-                    done
-
-                    echo "FAIL: Kubernetes rollout timed out."
-                    exit 1
+                    echo "GitOps update completed."
                 '''
             }
         }
