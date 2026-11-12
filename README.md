@@ -189,6 +189,8 @@ The original project contains application and Kubernetes assets. The exact path 
 
 > Perform this step **only on a fresh installation**. Do not recreate the already-running `easyshop-cluster`.
 
+<img width="254" height="224" alt="{C4F3EE56-A589-43A0-A6EF-F2E93ABDB209}" src="https://github.com/user-attachments/assets/0f554b8c-aa30-4129-a9e2-f973e870dd17" />
+
 ### 6.1 Check for existing clusters
 
 ```bash
@@ -900,3 +902,17 @@ kubectl get application easyshop-cicd -n argocd -o yaml
 **Verified end-to-end:** GitHub `main` (`67fa38d`) → Jenkins Build **#12 SUCCESS** → Docker Hub `johncorner158/easyshop-ci:build-12` → GitOps branch (`82c7161`) → Argo CD **Synced / Healthy** → Kubernetes `easyshop-cicd` deployment **2/2 Ready**. The CI/CD homepage and products API previously returned HTTP **200**.
 
 This repository demonstrates an operational **local CI/CD + GitOps deployment platform**. It is a practical engineering portfolio project, **not a claim of full production security or public cloud deployment**.
+
+<img width="672" height="305" alt="{0667B330-814F-44C9-A7AB-D99E0650D000}" src="https://github.com/user-attachments/assets/50f6f231-285e-4100-bf4e-162af1278faf" />
+<img width="665" height="306" alt="{66171B2B-9149-4843-8F42-52C1B2C795D3}" src="https://github.com/user-attachments/assets/232098e3-f232-412f-951e-5ec86e54e58d" />
+<img width="671" height="268" alt="{554CC3C7-F63F-4E8C-8288-9CCC5FF3698D}" src="https://github.com/user-attachments/assets/d7165942-68f5-492f-ab5b-3ba458ea6ce3" />
+<img width="509" height="290" alt="{1F60148F-3259-4661-BB48-F45DA5D0B8E9}" src="https://github.com/user-attachments/assets/c5ffeb96-1a87-4ff6-933e-0bc66f1dbc2c" />
+<img width="672" height="305" alt="{0667B330-814F-44C9-A7AB-D99E0650D000}" src="https://github.com/user-attachments/assets/0455c844-bbd1-4ed5-8a62-aca4b5550f40" />
+<img width="665" height="200" alt="{38D2C3AB-8C9F-443D-B26B-D0903C576E56}" src="https://github.com/user-attachments/assets/3eafe53c-6f46-4813-9621-eaa877228dd7" />
+<img width="665" height="297" alt="{85092663-6B19-492C-8239-6C2809E3708B}" src="https://github.com/user-attachments/assets/99c55d9a-2e76-4a39-ba0e-c53b07cc394f" />
+<img width="611" height="317" alt="{78EEFABE-56D3-4D5E-BBAA-3366FDAD6AD8}" src="https://github.com/user-attachments/assets/3e58a7c3-4c8d-4144-97e7-fd91de459ed6" />
+<img width="629" height="336" alt="{FBA4B15E-20FE-4ED4-BB2E-3CBA5D5A6524}" src="https://github.com/user-attachments/assets/fc81d4e4-1feb-4003-92eb-765a262d240a" />
+<img width="664" height="222" alt="{05260EDB-F31A-4C81-A008-0E5C9E059E7C}" src="https://github.com/user-attachments/assets/e899c184-f4f2-4364-8175-94556ea4b6ff" />
+<img width="665" height="314" alt="{39B332CF-D9D9-4C57-84A6-E8142CFFEDEC}" src="https://github.com/user-attachments/assets/e95e1a56-5c67-4a5d-bd86-88846e3a7010" />
+
+
