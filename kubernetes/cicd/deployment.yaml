@@ -1,55 +1,16 @@
-apiVersion: apps/v1
-kind: Deployment
-metadata:
-  name: easyshop-cicd
-  namespace: easyshop-cicd
-  labels:
-    app: easyshop-cicd
-spec:
-  replicas: 2
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 1
-      maxUnavailable: 0
-  selector:
-    matchLabels:
-      app: easyshop-cicd
-  template:
-    metadata:
-      labels:
-        app: easyshop-cicd
-    spec:
-      containers:
-        - name: easyshop
-          image: johncorner158/easyshop-ci:build-7
-          imagePullPolicy: IfNotPresent
-          ports:
-            - name: http
-              containerPort: 3000
-          readinessProbe:
-            httpGet:
-              path: /
-              port: http
-            initialDelaySeconds: 5
-            periodSeconds: 10
-            timeoutSeconds: 5
-            failureThreshold: 3
-            successThreshold: 1
-          envFrom:
-            - configMapRef:
-                name: easyshop-cicd-config
-            - secretRef:
-                name: easyshop-cicd-secrets
-          env:
-            - name: PORT
-              value: "3000"
-            - name: HOSTNAME
-              value: "0.0.0.0"
-          resources:
-            requests:
-              cpu: "100m"
-              memory: "128Mi"
-            limits:
-              cpu: "500m"
-              memory: "512Mi"
+# EasyShop CI/CD Deployment
+#
+# This file is intentionally not a deployable Kubernetes
+# resource. Do not apply it using kubectl.
+#
+# The reusable manifest is:
+#   kubernetes/cicd/deployment.yaml.template
+#
+# Jenkins currently deploys the image using:
+#   kubectl set image
+#
+# For a separately authorized manual deployment,
+# render the template with an explicitly selected
+# image tag and validate the rendered output first.
+#
+# Do not apply an old image-specific Deployment file.
