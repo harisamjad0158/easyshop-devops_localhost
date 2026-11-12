@@ -1,4 +1,5 @@
 <img width="1752" height="897" alt="EasyShop DevOps   GitOps Architecture" src="https://github.com/user-attachments/assets/32149277-8c05-4b23-845a-af5ffd47dadd" />
+
 # EasyShop | End-to-End DevOps CI/CD and GitOps on Local Kubernetes
 
 > **Portfolio implementation · Ubuntu · GitHub · Jenkins · Docker Hub · Kind/Kubernetes · NGINX Ingress · MongoDB · Argo CD**
