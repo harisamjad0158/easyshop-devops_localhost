@@ -61,7 +61,8 @@ flowchart LR
     K8S --- CICD
     ORIGINAL --> DB1[(MongoDB original)]
     CICD --> DB2[(MongoDB CI/CD)]
-```
+```<img width="1752" height="897" alt="EasyShop DevOps   GitOps Architecture" src="https://github.com/user-attachments/assets/cea0b261-ebd6-40a6-9e89-8b48ec70ce14" />
+
 
 **Delivery sequence:** `git push main` → Jenkins SCM polling → install and checks → Docker build → push `johncorner158/easyshop-ci:build-N` → commit image tag to `gitops` → Argo CD auto-sync → Kubernetes rolling update → application health verification.
 
