@@ -1,6 +1,5 @@
 # EasyShop | End-to-End DevOps CI/CD and GitOps on Local Kubernetes
 
-<img width="1752" height="897" alt="EasyShop DevOps   GitOps Architecture" src="https://github.com/user-attachments/assets/ad370156-3af9-4608-896c-b71f7a5c5ce8" />
 
 ## Contents
 
@@ -60,6 +59,7 @@ flowchart LR
     ORIGINAL --> DB1[(MongoDB original)]
     CICD --> DB2[(MongoDB CI/CD)]
 ```
+<img width="1752" height="897" alt="EasyShop DevOps   GitOps Architecture" src="https://github.com/user-attachments/assets/ad370156-3af9-4608-896c-b71f7a5c5ce8" />
 
 **Delivery sequence:** `git push main` → Jenkins SCM polling → install and checks → Docker build → push `johncorner158/easyshop-ci:build-N` → commit image tag to `gitops` → Argo CD auto-sync → Kubernetes rolling update → application health verification.
 
