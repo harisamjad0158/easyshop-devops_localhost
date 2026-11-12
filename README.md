@@ -1,8 +1,6 @@
 # EasyShop | End-to-End DevOps CI/CD and GitOps on Local Kubernetes
 
-> **Portfolio implementation · Ubuntu · GitHub · Jenkins · Docker Hub · Kind/Kubernetes · NGINX Ingress · MongoDB · Argo CD**
->
-> **Verified milestone:** Jenkins **Build #12 — SUCCESS**; GitHub `main` commit `67fa38d`; GitOps commit `82c7161`; deployed image `johncorner158/easyshop-ci:build-12`; Argo CD **Synced / Healthy** (12 November 2026).
+<img width="1752" height="897" alt="EasyShop DevOps   GitOps Architecture" src="https://github.com/user-attachments/assets/ad370156-3af9-4608-896c-b71f7a5c5ce8" />
 
 ## Contents
 
