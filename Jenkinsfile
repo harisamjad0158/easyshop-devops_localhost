@@ -3,6 +3,9 @@ pipeline {
 
     environment {
         IMAGE_NAME = 'easyshop-ci'
+        DOCKERHUB_USERNAME = 'johncorner158'
+        DOCKERHUB_CREDENTIALS = 'dockerhub-easyshop'
+        DOCKERHUB_IMAGE = 'johncorner158/easyshop-ci'
     }
 
     options {
@@ -78,16 +81,66 @@ pipeline {
                 '''
             }
         }
+
+        stage('Tag Docker Image') {
+            steps {
+                sh '''
+                    set -eu
+
+                    docker tag \
+                      "${IMAGE_NAME}:${IMAGE_TAG}" \
+                      "${DOCKERHUB_IMAGE}:${IMAGE_TAG}"
+
+                    docker image inspect \
+                      "${DOCKERHUB_IMAGE}:${IMAGE_TAG}" \
+                      >/dev/null
+
+                    echo "Docker Hub image tagged successfully."
+                '''
+            }
+        }
+
+        stage('Push Docker Image') {
+            steps {
+                withCredentials([
+                    usernamePassword(
+                        credentialsId: 'dockerhub-easyshop',
+                        usernameVariable: 'DOCKER_USER',
+                        passwordVariable: 'DOCKER_TOKEN'
+                    )
+                ]) {
+                    sh '''
+                        set -eu
+                        set +x
+
+                        export DOCKER_CONFIG="$(mktemp -d)"
+                        trap 'rm -rf "$DOCKER_CONFIG"' EXIT
+
+                        printf '%s' "$DOCKER_TOKEN" |
+                          docker login \
+                            --username "$DOCKER_USER" \
+                            --password-stdin
+
+                        docker push \
+                          "${DOCKERHUB_IMAGE}:${IMAGE_TAG}"
+
+                        docker logout >/dev/null 2>&1 || true
+
+                        echo "Docker Hub image pushed successfully."
+                    '''
+                }
+            }
+        }
     }
 
     post {
         always {
-            echo 'EasyShop CI pipeline finished.'
+            echo 'EasyShop CI/CD pipeline finished.'
         }
 
         success {
             echo 'All EasyShop CI checks passed.'
-            echo 'Docker image build completed successfully.'
+            echo 'Docker image built and pushed to Docker Hub.'
         }
 
         failure {
